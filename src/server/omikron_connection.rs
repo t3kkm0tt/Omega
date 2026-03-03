@@ -1,6 +1,6 @@
 use crate::server::{omikron_manager, short_link::add_short_link};
 use crate::sql::{sql, sql::get_omikron_by_id, user_online_tracker};
-use crate::util::file_util::load_file_buf;
+use crate::util::file_util::load_file_vec;
 use crate::util::{crypto_helper::encrypt, logger::PrintType};
 use crate::{get_private_key, get_public_key, log_cv_in, log_cv_out, log_in};
 use base64::{Engine as _, engine::general_purpose::STANDARD};
@@ -8,8 +8,9 @@ use dashmap::DashMap;
 use epsilon_core::{CommunicationType, CommunicationValue, DataTypes, DataValue};
 use epsilon_native::{Receiver, Sender, host};
 use quinn::ServerConfig;
+use quinn::crypto::rustls::QuicServerConfig;
 use rand::{Rng, distributions::Alphanumeric};
-use rustls::pki_types::PrivateKeyDer;
+use rustls::pki_types::{CertificateDer, PrivateKeyDer};
 use std::sync::Arc;
 use tokio::sync::RwLock;
 use x448::PublicKey;
@@ -19,8 +20,8 @@ pub struct OmikronServer;
 impl OmikronServer {
     pub async fn start(port: u16) -> Result<(), Box<dyn std::error::Error>> {
         let tls_cfg = OmikronServer::load_tls().expect("TLS config failed");
-        let server_crypto = quinn::crypto::rustls::QuicServerConfig::try_from(tls_cfg)
-            .expect("Failed to convert to QuicServerConfig");
+        let server_crypto =
+            QuicServerConfig::try_from(tls_cfg).expect("Failed to convert to QuicServerConfig");
         let mut host = host(port, ServerConfig::with_crypto(Arc::new(server_crypto))).await?;
         tokio::spawn(async move {
             while let Some((sender, receiver)) = host.next().await {
@@ -32,33 +33,15 @@ impl OmikronServer {
         Ok(())
     }
     fn load_tls() -> Option<rustls::ServerConfig> {
-        let mut cert_file_buf = load_file_buf("certs", "cert.pem").ok()?;
-        let mut key_file_buf = load_file_buf("certs", "cert.key").ok()?;
+        let cert_bytes = load_file_vec("certs", "cert.der").ok()?;
+        let key_bytes = load_file_vec("certs", "key.der").ok()?;
 
-        let cert_chain = rustls_pemfile::certs(&mut cert_file_buf)
-            .collect::<Result<Vec<_>, _>>()
-            .ok()?;
-
-        let mut keys: Vec<PrivateKeyDer> = rustls_pemfile::pkcs8_private_keys(&mut key_file_buf)
-            .map(|k| k.map(Into::into))
-            .collect::<Result<Vec<_>, _>>()
-            .ok()?;
-
-        if keys.is_empty() {
-            let mut key_file_buf = load_file_buf("certs", "cert.key").ok()?;
-            keys = rustls_pemfile::rsa_private_keys(&mut key_file_buf)
-                .map(|k| k.map(Into::into))
-                .collect::<Result<Vec<_>, _>>()
-                .ok()?;
-        }
-
-        if keys.is_empty() {
-            return None;
-        }
+        let cert_chain = vec![CertificateDer::from(cert_bytes)];
+        let private_key = PrivateKeyDer::try_from(key_bytes).ok()?;
 
         let cfg = rustls::ServerConfig::builder()
             .with_no_client_auth()
-            .with_single_cert(cert_chain, keys.remove(0))
+            .with_single_cert(cert_chain, private_key)
             .ok()?;
 
         Some(cfg)
