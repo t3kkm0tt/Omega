@@ -27,6 +27,9 @@ async fn main() {
     startup();
     log_in!("Incoming messages");
     log_out!("Outgoing messages");
+
+    let _ = omikron_connection::start(9187).await;
+
     log!("Started");
     log!("  .env");
     if let Err(e) = initialize_db().await {
@@ -43,7 +46,8 @@ async fn main() {
     } else {
         log!("  Users");
     }
+
     let _ = server::server::start(9188).await;
-    let _ = omikron_connection::OmikronServer::start(9187).await;
+
     tokio::signal::ctrl_c().await.unwrap();
 }

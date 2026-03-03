@@ -88,7 +88,16 @@ pub fn untrack_many_users(user_ids: &[i64]) {
 }
 
 pub async fn untrack_omikron(omikron_id: i64) {
-    // Step 1: Collect all iota_ids where this omikron_id is connected
+    let primary_keys_to_remove: Vec<i64> = IOTA_PRIMARY_OMIKRON_CONNECTION
+        .iter()
+        .filter(|entry| *entry.value() == omikron_id)
+        .map(|entry| *entry.key())
+        .collect();
+
+    for key in primary_keys_to_remove {
+        IOTA_PRIMARY_OMIKRON_CONNECTION.remove(&key);
+    }
+
     let mut offline_iotas = Vec::new();
     let mut primary_to_remove = Vec::new();
 

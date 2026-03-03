@@ -65,16 +65,20 @@ pub async fn handle(path: &str, body_string: Option<String>) -> HttpResponse {
         // ==================================================
         ["api", "get", "omikron"] => {
             if let Ok(omikron_conn) = get_random_omikron().await {
-                let id = omikron_conn.get_omikron_id().await;
+                if let Some(id) = omikron_conn.get_omikron_id().await {
+                    if let Ok((public_key, ip_address)) = sql::get_omikron_by_id(id).await {
+                        let mut res = JsonValue::new_object();
+                        res["status"] = "success".into();
+                        res["id"] = id.into();
+                        res["public_key"] = public_key.into();
+                        res["ip_address"] = ip_address.into();
 
-                if let Ok((public_key, ip_address)) = sql::get_omikron_by_id(id).await {
-                    let mut res = JsonValue::new_object();
-                    res["status"] = "success".into();
-                    res["id"] = id.into();
-                    res["public_key"] = public_key.into();
-                    res["ip_address"] = ip_address.into();
-
-                    (StatusCode::OK, res.dump())
+                        (StatusCode::OK, res.dump())
+                    } else {
+                        let mut res = JsonValue::new_object();
+                        res["status"] = "error".into();
+                        (StatusCode::INTERNAL_SERVER_ERROR, res.dump())
+                    }
                 } else {
                     let mut res = JsonValue::new_object();
                     res["status"] = "error".into();

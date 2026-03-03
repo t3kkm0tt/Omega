@@ -15,39 +15,6 @@ aes-gcm = "*"
 ansi_term = "0.12.1"
 anyhow = "1.0.101"
 async-trait = "0.1.89"
-async-tungstenite = { version = "0.32.0", features = [
-    "futures-03-sink",
-    "futures-util",
-    "handshake",
-    "__rustls-tls",
-    "async-native-tls",
-    "async-std",
-    "async-std-runtime",
-    "async-tls",
-    "gio",
-    "gio-runtime",
-    "glib",
-    "openssl",
-    "real-async-native-tls",
-    "real-async-tls",
-    "real-native-tls",
-    "real-tokio-native-tls",
-    "real-tokio-openssl",
-    "real-tokio-rustls",
-    "rustls-native-certs",
-    "rustls-pki-types",
-    "tokio",
-    "tokio-native-tls",
-    "tokio-openssl",
-    "tokio-runtime",
-    "tokio-rustls-manual-roots",
-    "tokio-rustls-native-certs",
-    "tokio-rustls-webpki-roots",
-    "url",
-    "verbose-logging",
-    "webpki-roots",
-] }
-axum = { version = "0.8.8", features = ["ws", "http2"] }
 base64 = "0.22.1"
 bytes = "1.11.1"
 color-eyre = "0.6.5"
@@ -58,16 +25,14 @@ futures-util = "0.3.31"
 hex = "0.4.3"
 hkdf = "0.12.4"
 http-body-util = "0.1.3"
-hyper = { version = "1.8.1", features = ["http2", "full"] }
-hyper-rustls = { version = "0.27.7", features = ["http2"] }
-hyper-util = { version = "0.1.20", features = ["full"] }
 json = "0.12.4"
 once_cell = "1.21.3"
 pnet = "0.35.0"
 rand = "0.8"
 rand_core = { version = "0.6", features = ["getrandom", "std"] }
-reqwest = "0.13.2"
-rustls = "0.23.37"
+reqwest = { version = "0.13.2" }
+rustls = { version = "0.23.37", default-features = false, features = ["std", "tls12", "aws-lc-rs", "prefer-post-quantum"] }
+quinn = { version = "0.11.9", default-features = false, features = ["runtime-tokio", "rustls-aws-lc-rs"] }
 rustls-pemfile = "2.2.0"
 sha1 = "0.10.6"
 sha2 = "0.10.9"
@@ -85,4 +50,4 @@ uuid = { version = "1.19.0", features = ["v4"] }
 walkdir = "2.5.0"
 x448 = "0.6.0"
 zip = "6.0.0"
-quinn = "0.11.9"
+thiserror = "2.0.18"
