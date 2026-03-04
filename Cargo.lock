@@ -1171,7 +1171,7 @@ dependencies = [
 [[package]]
 name = "epsilon-core"
 version = "0.1.0"
-source = "git+https://github.com/Tensamin/Epsilon.git#4bdd32b44a77ac980cede20a1d401004f52e4a29"
+source = "git+https://github.com/Tensamin/Epsilon.git#fb490bac71a652ecd705875baab910b753430164"
 dependencies = [
  "byteorder",
  "quinn",
@@ -1183,7 +1183,7 @@ dependencies = [
 [[package]]
 name = "epsilon-native"
 version = "0.1.0"
-source = "git+https://github.com/Tensamin/Epsilon.git#4bdd32b44a77ac980cede20a1d401004f52e4a29"
+source = "git+https://github.com/Tensamin/Epsilon.git#fb490bac71a652ecd705875baab910b753430164"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1196,6 +1196,7 @@ dependencies = [
  "thiserror 2.0.18",
  "tokio",
  "wtransport",
+ "wtransport-proto",
 ]
 
 [[package]]
@@ -2752,9 +2753,9 @@ dependencies = [
 
 [[package]]
 name = "quote"
-version = "1.0.44"
+version = "1.0.45"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "21b2ebcf727b7760c461f091f9f0f539b77b8e87f2fd88131e7f1b433b3cece4"
+checksum = "41f2619966050689382d2b44f664f4bc593e129785a36d6ee376ddf37259b924"
 dependencies = [
  "proc-macro2",
 ]
@@ -2842,6 +2843,7 @@ version = "0.14.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "10b99e0098aa4082912d4c649628623db6aba77335e4f4569ff5083a6448b32e"
 dependencies = [
+ "aws-lc-rs",
  "pem",
  "ring",
  "rustls-pki-types",
@@ -4921,6 +4923,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d43b0f71ce057da06bc0851b23ee24f3f86190b07203dd8f567d0b706a185202"
 dependencies = [
  "asn1-rs",
+ "aws-lc-rs",
  "data-encoding",
  "der-parser",
  "lazy_static",
