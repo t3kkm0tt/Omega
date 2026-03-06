@@ -6,22 +6,14 @@ use crate::{
         sql::{self, get_by_user_id, get_by_username, get_iota_by_id, get_omikron_by_id},
         user_online_tracker::{self},
     },
-    util::{
-        crypto_helper::encrypt,
-        file_util::{load_file_buf, load_file_vec},
-        logger::PrintType,
-    },
+    util::{crypto_helper::encrypt, file_util::load_file_vec, logger::PrintType},
 };
 use base64::{Engine as _, engine::general_purpose::STANDARD};
 use dashmap::DashMap;
 use epsilon_core::{CommunicationType, CommunicationValue, DataTypes, DataValue};
 use epsilon_native::{Host, Receiver, Sender};
-use quinn::crypto::rustls::QuicServerConfig;
-use quinn::{Endpoint, ServerConfig};
 use rand::{Rng, distributions::Alphanumeric};
-use rustls::{ServerConfig as CryptoConfig, crypto::aws_lc_rs};
 use std::{
-    net::SocketAddr,
     sync::Arc,
     time::{Duration, Instant},
 };
@@ -1090,12 +1082,6 @@ impl OmikronConnection {
         }
     }
 
-    fn arc_self(self: Arc<Self>) -> Arc<Self> {
-        // This is a bit of a hack - in practice you'd store the Arc in the struct
-        // or use weak references. For now, we rely on the caller having the Arc.
-        panic!("Use the Arc<OmikronConnection> directly")
-    }
-
     // Public API for external use
     pub async fn is_authenticated(self: Arc<Self>) -> bool {
         self.state.read().await.is_authenticated()
@@ -1115,7 +1101,10 @@ impl OmikronConnection {
 // ============================================================================
 
 pub async fn start(port: u16) -> Result<(), Box<dyn std::error::Error>> {
-    let _ = aws_lc_rs::default_provider().install_default();
+    let cert_pem = load_file_vec("certs", "cert.pem")
+        .map_err(|e| format!("Failed to load certificate: {}", e))?;
+    let key_pem = load_file_vec("certs", "key.pem")
+        .map_err(|e| format!("Failed to load private key: {}", e))?;
 
     let cert_pem = load_file_vec("certs", "cert.pem").expect("Error loading Pemfile");
 
