@@ -9,8 +9,8 @@ use std::{
 };
 
 use ansi_term::Color;
-use epsilon_core::{CommunicationValue, DataTypes, DataValue};
 use json::JsonValue;
+use ttp_core::{CommunicationValue, DataTypes, DataValue};
 
 static LOGGER: OnceLock<mpsc::Sender<LogMessage>> = OnceLock::new();
 

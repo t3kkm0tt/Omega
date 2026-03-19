@@ -11,8 +11,6 @@ use crate::{
 };
 use base64::{Engine as _, engine::general_purpose::STANDARD};
 use dashmap::DashMap;
-use epsilon_core::{CommunicationType, CommunicationValue, DataTypes, DataValue};
-use epsilon_native::{Host, Receiver, Sender};
 use rand::{Rng, distributions::Alphanumeric};
 use std::{
     sync::Arc,
@@ -22,6 +20,8 @@ use tokio::{
     sync::{Mutex, RwLock},
     time::interval,
 };
+use ttp_core::{CommunicationType, CommunicationValue, DataTypes, DataValue};
+use ttp_native::{Host, Receiver, Sender};
 use x448::PublicKey;
 
 // ============================================================================
@@ -92,7 +92,7 @@ impl AuthState {
 }
 
 // ============================================================================
-// Omikron Connection (Epsilon/QUIC-based)
+// Omikron Connection (ttp/QUIC-based)
 // ============================================================================
 
 pub struct OmikronConnection {
@@ -1125,7 +1125,7 @@ pub async fn start(port: u16) -> Result<(), Box<dyn std::error::Error>> {
 
     let key_pem = load_file_vec("certs", "transport_key.pem").expect("Error loading Keyfile");
 
-    let mut host: Host = epsilon_native::host(port, cert_pem, key_pem).await?;
+    let mut host: Host = ttp_native::host(port, cert_pem, key_pem).await?;
     log!("OmikronServer listening on port {}", port);
 
     while let Some((sender, mut receiver)) = host.next().await {

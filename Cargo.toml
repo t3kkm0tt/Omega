@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-epsilon-core = { git = "https://github.com/Tensamin/Epsilon.git", package = "epsilon-core" }
-epsilon-native = { git = "https://github.com/Tensamin/Epsilon.git", package = "epsilon-native" }
+ttp-core = { git = "https://github.com/Tensamin/ttp.git", package = "ttp-core" }
+ttp-native = { git = "https://github.com/Tensamin/ttp.git", package = "ttp-native" }
 
 actix-web = { version = "4.12.1", features = ["rustls-0_23"] }
 aes-gcm = "*"

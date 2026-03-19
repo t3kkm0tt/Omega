@@ -13,8 +13,6 @@ dependencies = [
  "base64",
  "dashmap",
  "dotenv",
- "epsilon-core",
- "epsilon-native",
  "hex",
  "hkdf",
  "json",
@@ -30,6 +28,8 @@ dependencies = [
  "strum_macros 0.27.2",
  "thiserror 2.0.18",
  "tokio",
+ "ttp-core",
+ "ttp-native",
  "uuid",
  "x448",
  "zip",
@@ -1021,32 +1021,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "75030f3c4f45dafd7586dd6780965a8c7e8e285a5ecb86713e63a79c5b2766f3"
 dependencies = [
  "cfg-if",
-]
-
-[[package]]
-name = "epsilon-core"
-version = "0.1.0"
-source = "git+https://github.com/Tensamin/Epsilon.git#d5edc693a91954834a38c39517b79092983eac5c"
-dependencies = [
- "base64",
- "byteorder",
- "rand 0.8.5",
- "strum 0.28.0",
- "strum_macros 0.28.0",
-]
-
-[[package]]
-name = "epsilon-native"
-version = "0.1.0"
-source = "git+https://github.com/Tensamin/Epsilon.git#d5edc693a91954834a38c39517b79092983eac5c"
-dependencies = [
- "epsilon-core",
- "quinn",
- "rustls",
- "rustls-native-certs",
- "thiserror 2.0.18",
- "tokio",
- "wtransport",
 ]
 
 [[package]]
@@ -3509,6 +3483,32 @@ name = "try-lock"
 version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e421abadd41a4225275504ea4d6566923418b7f05506fbc9c0fe86ba7396114b"
+
+[[package]]
+name = "ttp-core"
+version = "0.1.0"
+source = "git+https://github.com/t3kkm0tt/ttp.git#8a3cd5cea756d62e7f85824ebfa1e64c7594c7de"
+dependencies = [
+ "base64",
+ "byteorder",
+ "rand 0.8.5",
+ "strum 0.28.0",
+ "strum_macros 0.28.0",
+]
+
+[[package]]
+name = "ttp-native"
+version = "0.1.0"
+source = "git+https://github.com/t3kkm0tt/ttp.git#8a3cd5cea756d62e7f85824ebfa1e64c7594c7de"
+dependencies = [
+ "quinn",
+ "rustls",
+ "rustls-native-certs",
+ "thiserror 2.0.18",
+ "tokio",
+ "ttp-core",
+ "wtransport",
+]
 
 [[package]]
 name = "typenum"
